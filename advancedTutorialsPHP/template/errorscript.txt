@@ -1,0 +1,29 @@
+ini_set('display_errors',1); 
+ error_reporting(E_ALL);
+ if(isset($_POST['name']));
+ 
+ mysql_real_escape_string(htmlentities(stripslashes($_POST["title"]))).'';
+ 
+ $_SERVER ['HTTP_USER_AGENT'];
+ 
+ stripos();stripos — Find the position of the first occurrence of a case-insensitive substring in a string
+ stripslashes(); for majic quotes
+ 
+ 
+ header( 'Cache-Control: no-store, no-cache, must-revalidate' ); 
+header( 'Cache-Control: post-check=0, pre-check=0', false ); 
+header( 'Pragma: no-cache' ); 
+
+
+<?php
+if ($_POST) {
+   $errors = validate_post($_POST);
+
+   if ($!errors) {
+       take_action($_POST);
+       // This is it (you may want to pass some additional parameters to generate visual feedback later):
+       header('Location: ?');
+       exit;
+   }
+}
+?>

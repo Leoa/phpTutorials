@@ -1,0 +1,30 @@
+*{
+  	margin:0px;
+	padding:0px;
+}
+
+h1{
+	font: bold 20px Tahoma;
+}
+h2{
+	font: bold 14px Tahoma;
+}
+header,article,section,footer,nav,aside,hgroup{
+	display:block;
+}
+
+body{
+	text-align:center;
+}
+
+#page_wraper{
+	border: 1px solid black;
+	width:1000px;
+	margin:20px auto;
+	text-align:left;
+}
+
+
+a{color:#000;
+ margin-right: 10px;
+}

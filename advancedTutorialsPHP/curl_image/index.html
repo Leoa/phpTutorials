@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Upload Image File To Remote Server With PHP cURL</title>
+</head>
+
+<body>
+<h1>How to upload image file to remote server with PHP cURL</h1>
+<p>In this example we learn how to upload static files to remote server using PHP cURL library.</p>
+<h3>We must know following functionality before we continue this example</h3>
+<ul>
+  <li>PHP file upload functionality.</li>
+  <li>cURL function reference.</li>
+  <li>how to submit data to remote server with PHP cURL</li>
+</ul>
+<h3>Files and Folders</h3>
+<p>For this example we use three files </p>
+<ul>
+  <li><strong>uploader.php</strong> -that recieves the files on to the remote server.</li>
+  <li><strong>handler.php</strong> -is used to web based client to upload the file.</li>
+  <li><strong>curl_handler.php</strong> -PHP cURL uploading client to upload file.</li>
+</ul>
+<p>Since we use same host to both local and remote server ,we create seperate directories</p>
+<ul>
+  <li><strong>local_files/ </strong>- these files will be uploaded to the remote server ,means to <strong>uploaded_files</strong> directory.</li>
+  <li><strong>uploaded_files/</strong> - these files are from the uploding client from both <strong>web based </strong>and <strong>PHP cURL based</strong>.</li>
+</ul>
+<h3>uploader.php</h3>
+<pre lang="php">
+
+$upload_directory=dirname(__FILE__).'/uploaded_files/';
+//check if form submitted
+if (isset($_POST['upload'])) {  
+    if (!empty($_FILES['my_file'])) { 
+			//check for image submitted
+    		if ($_FILES['my_file']['error'] > 0) { 
+			// check for error re file
+            echo "Error: " . $_FILES["my_file"]["error"] ;
+        } else {
+			//move temp file to our server            
+			move_uploaded_file($_FILES['my_file']['tmp_name'], 
+			$upload_directory . $_FILES['my_file']['name']);	
+			echo 'Uploaded File.';
+        }
+    } else {
+	        die('File not uploaded.'); 
+			// exit script
+    }
+}
+
+</pre>
+<p>handler.php</p>
+<pre lang="html">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+<form action="uploader.php" method="post" enctype="multipart/form-data" name="form1" id="form1">
+  <input type="file" name="my_file" id="my_file" />
+  <input type="submit" name="upload" id="upload" value="Upload" />
+</form>
+<h3>curl_handler.php</h3>
+<pre lang="php">
+$local_directory=dirname(__FILE__).'/local_files/';
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_VERBOSE, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/4.0 (compatible;)");
+    curl_setopt($ch, CURLOPT_POST, true);
+	curl_setopt($ch, CURLOPT_URL, 'http://localhost/curl_image/uploader.php' );
+	//most importent curl assues @filed as file field
+    $post_array = array(
+        "my_file"=>"@".$local_directory.'shreya.jpg',
+        "upload"=>"Upload"
+    );
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_array); 
+    $response = curl_exec($ch);
+	echo $response;
+</pre>
+<p>&nbsp;</p>
+</body>
+</html>
+</pre>
+
+<p>&nbsp;</p>
+</body>
+
+</html>

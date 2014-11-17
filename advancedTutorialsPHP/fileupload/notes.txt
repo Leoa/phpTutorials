@@ -1,0 +1,74 @@
+http://www.web-development-blog.com/archives/tutorial-ftp-upload-via-curl/
+
+Web Development Blog
+Read about Website Development, Online Marketing and Web Hosting
+
+    Home
+    About
+    WordPress Plugins
+    Cloud Hosting
+
+Search for:
+RSS Feed Become a friend@facebook finalwebsites's YouTube Channel Add me to your network follow me on twitter Google Profile
+Home » PHP Scripts » Tutorial: FTP Upload via cURL
+Tutorial: FTP Upload via cURL
+Posted by Olaf
+October 11, 2007
+
+FTP hosting is often much cheaper than regular web hosting. The upload with an ftp client is for sure the most common way, but could be a problem for people behind a firewall or without enough rights (capabilities) to install a FTP client. For those a upload via a web form is the best solution.
+Upload limitations by your web server
+
+The default value for file uploads within PHP is 2MB, if you need to upload bigger files you need to change your PHP configuration or need to create a .htaccess file with this code to upload files of max. 16MB:
+
+php_value upload_max_filesize 16M
+php_value post_max_size 20M
+
+The value for the post_max_size is larger than the value for the upload_max_size because we want to be able to upload more than just a file (also other data via text fields or text areas). The .htaccess file needs to be in the same directory than your upload script.
+Using cURL for file transmissions
+
+cURL is a great library for file transmissions via different types of protocols. The library supports the transport via POST, GET, FTP upload and much more. cURL is also able to authenticate on the target server or website.
+
+In this tutorial we want to upload a file to some (password protected) remote FTP server via a web form.
+
+<form action="curlupload.php" method="post" enctype="multipart/form-data">
+<div>
+<label for="upload">Select file</label>
+<input name="upload" type="file" />
+<input type="submit" name="Submit" value="Upload" />
+</div>
+</form>
+
+The form is simple and has only one file field and the submit button. Don’t forget to protect this kind of pages.
+
+Next we need some PHP code to handle the upload and opens a stream to send the file via cURL to the remote FTP server (place this code above the html code):
+
+if (isset($_POST['Submit'])) {
+ if (!empty($_FILES['upload']['name'])) {
+ 	$ch = curl_init();
+ 	$localfile = $_FILES['upload']['tmp_name'];
+ 	$fp = fopen($localfile, 'r');
+ 	curl_setopt($ch, CURLOPT_URL, 'ftp://ftp_login:password@ftp.domain.com/'.$_FILES['upload']['name']);
+ 	curl_setopt($ch, CURLOPT_UPLOAD, 1);
+ 	curl_setopt($ch, CURLOPT_INFILE, $fp);
+ 	curl_setopt($ch, CURLOPT_INFILESIZE, filesize($localfile));
+ 	curl_exec ($ch);
+ 	$error_no = curl_errno($ch);
+ 	curl_close ($ch);
+        if ($error_no == 0) {
+        	$error = 'File uploaded succesfully.';
+        } else {
+        	$error = 'File upload error.';
+        }
+ } else {
+    	$error = 'Please select a file.';
+ }
+}
+
+After the user has selected a file, the data is uploaded to the web server. We open the temp file with fopen and the cURL session is initialized. Together with the URL for the remote FTP server, we send the FTP login and password to the target location. The other cURL settings are required to send the file via the FTP protocol to the target server. If the returned error code is equal “0″, the upload was successful.
+
+This small PHP snippet is responsible for the upload to some remote FTP server. We suggest using more validation routines in a production environment.
+Rating: 10.0/10 (2 votes cast)
+Related Posts
+
+    PHP-Upload Uploading files with cURL?While testing some code to find a different way to upload files...
+    zip_icon Tutorial: Create a zip file from folders on the flyFor a future project I needed these days some easy to use zip...
